@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Dashboard — Monrigold Atelier</title>
+<style>
+:root{
+  --yellow-100:#fff8e1;
+  --yellow-200:#fff1b8;
+  --yellow-400:#ffc107;
+  --yellow-500:#ffb300;
+  --accent:#8a4b00;
+  --muted:#6b4f2b;
+  --card-shadow:0 8px 24px rgba(0,0,0,0.12);
+  --radius:16px;
+  font-family:'Segoe UI',Roboto,'Noto Sans Thai',system-ui,Arial;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--yellow-100);color:var(--muted);padding:1rem}
+.container{max-width:1100px;margin:0 auto}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+h1{color:var(--accent);font-size:1.4rem}
+button{cursor:pointer;border:none;padding:.5rem 1rem;border-radius:10px;font-weight:600}
+.btn-primary{background:var(--yellow-400);color:var(--accent);box-shadow:var(--card-shadow);}
+.btn-secondary{background:#fff;border:1px solid rgba(0,0,0,0.2);}
+table{width:100%;border-collapse:collapse;margin-top:1rem;font-size:.9rem}
+th,td{padding:.6rem .4rem;border:1px solid rgba(0,0,0,0.15);text-align:left}
+th{background:var(--yellow-200)}
+img.slipe{height:60px;border-radius:6px;}
+.flex-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.28);z-index:999;}
+.modal.open{display:flex;}
+.modal-card{width:min(720px,95%);background:white;padding:1rem;border-radius:var(--radius);box-shadow:var(--card-shadow);position:relative;max-height:90vh;overflow:auto}
+input,select,textarea{padding:.4rem .6rem;border-radius:8px;border:1px solid #ccc;width:100%}
+textarea{resize:vertical}
+label{font-weight:600;margin-top:.4rem;display:block}
+.row-flex{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.5rem}
+.drag-handle{cursor:grab;font-size:1.2rem}
+.section-title{margin-top:1rem;font-weight:700;color:var(--accent)}
+@media(max-width:600px){.flex-row{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>Admin Dashboard — Monrigold Atelier</h1>
+<div class="flex-row">
+<button class="btn-primary" onclick="showAddProductModal()">เพิ่มสินค้าใหม่</button>
+<button class="btn-secondary" onclick="loadProducts()">รีเฟรชสินค้า</button>
+</div>
+</header>
+
+<section>
+<h2 class="section-title">แก้ไข Hero Section</h2>
+<div class="row-flex">
+<div style="flex:1">
+<label>ชื่อหัวข้อ</label>
+<input type="text" id="hero-title">
+</div>
+<div style="flex:1">
+<label>คำโปรย</label>
+<input type="text" id="hero-sub">
+</div>
+</div>
+<div style="margin-top:.6rem">
+<label>Feature Tags (คั่นด้วย , )</label>
+<input type="text" id="hero-tags">
+</div>
+<div style="margin-top:.6rem;text-align:right">
+<button class="btn-primary" onclick="saveHero()">บันทึก Hero</button>
+</div>
+</section>
+
+<section>
+<h2 class="section-title">แก้ไขโลโก้</h2>
+<div class="row-flex">
+<input type="file" id="logo-input" accept="image/*">
+<button class="btn-primary" onclick="saveLogo()">บันทึกโลโก้</button>
+</div>
+</section>
+
+<section>
+<h2 class="section-title">สินค้าปัจจุบัน</h2>
+<table id="product-table">
+<thead>
+<tr>
+<th></th>
+<th>ชื่อสินค้า</th>
+<th>ราคา (฿)</th>
+<th>รายละเอียด</th>
+<th>รูป</th>
+<th>จัดการ</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</section>
+
+<!-- Modal Add/Edit Product -->
+<div class="modal" id="modal-product">
+<div class="modal-card">
+<h3 id="modal-title">เพิ่มสินค้า</h3>
+<div class="row-flex">
+<div style="flex:1">
+<label>ชื่อสินค้า</label>
+<input type="text" id="prod-name">
+</div>
+<div style="flex:1">
+<label>ราคา</label>
+<input type="number" id="prod-price">
+</div>
+</div>
+<div style="margin-top:.6rem">
+<label>รายละเอียดสินค้า</label>
+<textarea id="prod-desc" rows="3"></textarea>
+</div>
+<div style="margin-top:.6rem">
+<label>รูปภาพ (หลายรูป)</label>
+<input type="file" id="prod-img" accept="image/*" multiple>
+<div id="existing-imgs" style="margin-top:.4rem;display:flex;gap:.4rem;flex-wrap:wrap"></div>
+</div>
+<div style="text-align:right;margin-top:1rem">
+<button class="btn-secondary" onclick="closeProductModal()">ปิด</button>
+<button class="btn-primary" onclick="saveProduct()">บันทึก</button>
+</div>
+</div>
+</div>
+
+<script>
+// Data
+let products = JSON.parse(localStorage.getItem('marigold_products')||'[]');
+let heroData = JSON.parse(localStorage.getItem('marigold_hero')||'{}');
+let editingProductId = null;
+
+// Logo
+const logoInput = document.getElementById('logo-input');
+function saveLogo(){
+  if(logoInput.files.length===0){alert('เลือกไฟล์ก่อน'); return;}
+  const reader = new FileReader();
+  reader.onload = e=>{
+    localStorage.setItem('marigold_logo', e.target.result);
+    alert('บันทึกโลโก้เรียบร้อย');
+  };
+  reader.readAsDataURL(logoInput.files[0]);
+}
+
+// Hero
+function loadHero(){
+  document.getElementById('hero-title').value=heroData.title||'';
+  document.getElementById('hero-sub').value=heroData.sub||'';
+  document.getElementById('hero-tags').value = heroData.tags?heroData.tags.join(','):'';
+}
+function saveHero(){
+  heroData.title=document.getElementById('hero-title').value;
+  heroData.sub=document.getElementById('hero-sub').value;
+  heroData.tags=document.getElementById('hero-tags').value.split(',').map(t=>t.trim());
+  localStorage.setItem('marigold_hero',JSON.stringify(heroData));
+  alert('Hero บันทึกเรียบร้อย');
+}
+
+// Products
+const tbody = document.querySelector('#product-table tbody');
+
+function renderProducts(){
+  tbody.innerHTML='';
+  products.forEach((p,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td class="drag-handle">☰</td>
+      <td>${p.name}</td>
+      <td>฿${p.price}</td>
+      <td>${p.desc}</td>
+      <td style="display:flex;gap:.3rem;flex-wrap:wrap;">${p.img.map(src=>'<img src="'+src+'" class="slipe">').join('')}</td>
+      <td class="flex-row">
+        <button class="btn-primary" onclick="editProduct(${i})">แก้ไข</button>
+        <button class="btn-secondary" onclick="deleteProduct(${i})">ลบ</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function showAddProductModal(){
+  editingProductId=null;
+  document.getElementById('modal-title').innerText='เพิ่มสินค้า';
+  document.getElementById('prod-name').value='';
+  document.getElementById('prod-price').value='';
+  document.getElementById('prod-desc').value='';
+  document.getElementById('prod-img').value='';
+  document.getElementById('existing-imgs').innerHTML='';
+  document.getElementById('modal-product').classList.add('open');
+}
+
+function editProduct(i){
+  editingProductId=i;
+  const p=products[i];
+  document.getElementById('modal-title').innerText='แก้ไขสินค้า';
+  document.getElementById('prod-name').value=p.name;
+  document.getElementById('prod-price').value=p.price;
+  document.getElementById('prod-desc').value=p.desc;
+  document.getElementById('prod-img').value='';
+  // Show existing images
+  const existing=document.getElementById('existing-imgs');
+  existing.innerHTML='';
+  p.img.forEach((src,index)=>{
+    const img=document.createElement('img');
+    img.src=src;
+    img.className='slipe';
+    img.style.height='50px';
+    img.style.cursor='pointer';
+    img.title='คลิกเพื่อลบ';
+    img.onclick=()=>{p.img.splice(index,1); renderExistingImages();};
+    existing.appendChild(img);
+  });
+  function renderExistingImages(){existing.innerHTML='';p.img.forEach((src,index)=>{
+    const img=document.createElement('img');
+    img.src=src;
+    img.className='slipe';
+    img.style.height='50px';
+    img.style.cursor='pointer';
+    img.title='คลิกเพื่อลบ';
+    img.onclick=()=>{p.img.splice(index,1); renderExistingImages();};
+    existing.appendChild(img);
+  });}
+  renderExistingImages();
+  document.getElementById('modal-product').classList.add('open');
+}
+
+function closeProductModal(){document.getElementById('modal-product').classList.remove('open');}
+
+function saveProduct(){
+  const name=document.getElementById('prod-name').value;
+  const price=parseInt(document.getElementById('prod-price').value);
+  const desc=document.getElementById('prod-desc').value;
+  const imgInput=document.getElementById('prod-img');
+
+  if(!name||!price||!desc){alert('กรอกข้อมูลให้ครบ');return;}
+
+  let imgs=[];
+  if(editingProductId!==null){imgs=products[editingProductId].img||[];}
+  const files=Array.from(imgInput.files);
+  files.forEach(f=>{
+    const url=URL.createObjectURL(f);
+    imgs.push(url);
+  });
+
+  if(editingProductId!==null){
+    products[editingProductId]={...products[editingProductId],name,price,desc,img:imgs};
+  }else{
+    products.push({id:Date.now(),name,price,desc,img:imgs});
+  }
+  localStorage.setItem('marigold_products',JSON.stringify(products));
+  closeProductModal();
+  renderProducts();
+}
+
+// Delete
+function deleteProduct(i){
+  if(confirm('ต้องการลบสินค้านี้?')){
+    products.splice(i,1);
+    localStorage.setItem('marigold_products',JSON.stringify(products));
+    renderProducts();
+  }
+}
+
+// init
+loadHero();
+renderProducts();
+</script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Monrigold — แกลเลอรีเสื้อผ้าดอกดาวเรือง</title>
+<style>
+:root{
+  --yellow-100:#fff8e1;
+  --yellow-200:#fff1b8;
+  --yellow-400:#ffc107;
+  --yellow-500:#ffb300;
+  --accent:#8a4b00;
+  --muted:#6b4f2b;
+  --card-shadow:0 8px 24px rgba(0,0,0,0.12);
+  --radius:16px;
+  font-family:'Segoe UI',Roboto,'Noto Sans Thai',system-ui,Arial;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(1200px 400px at 10% 10%,rgba(255,196,0,0.06),transparent),linear-gradient(180deg,var(--yellow-100),var(--yellow-200));color:var(--muted);padding:2rem;}
+.container{max-width:1100px;margin:0 auto;}
+header{display:flex;align-items:center;justify-content:flex-start;margin-bottom:1rem;gap:1rem;}
+.logo{width:80px;height:80px;border-radius:12px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:var(--card-shadow);}
+.logo img{width:100%;height:100%;object-fit:cover;}
+.site-info{display:flex;flex-direction:column;gap:.2rem;}
+.site-info h1{font-size:1.3rem;color:var(--accent);}
+.site-info p{font-size:.9rem;color:var(--muted);}
+.site-tags{font-size:.85rem;color:var(--accent);opacity:.9;}
+.hero{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;padding:.75rem;background:linear-gradient(180deg,rgba(255,255,255,0.65),rgba(255,255,255,0.5));border-radius:var(--radius);box-shadow:var(--card-shadow);}
+.hero-left h2{font-size:1.6rem;color:var(--accent);margin-bottom:.25rem;}
+.hero-left p{margin-bottom:.5rem;}
+.features{display:flex;gap:.5rem;flex-wrap:wrap;}
+.chip{background:rgba(138,75,0,0.06);padding:.3rem .6rem;border-radius:999px;font-size:.85rem;color:var(--accent);}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:1.25rem;}
+.product{border-radius:12px;overflow:hidden;background:#fffef9;padding:.5rem;display:flex;flex-direction:column;gap:.4rem;box-shadow:var(--card-shadow);cursor:pointer;transition:transform .25s;}
+.product:hover{transform:translateY(-3px);}
+.product img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;transition:transform .3s;}
+.product img:hover{transform:scale(1.05);}
+.product h3{font-size:1rem;color:var(--accent);}
+.price{font-weight:700;color:var(--accent);}
+footer{margin-top:1.5rem;padding:1rem;text-align:center;color:#7a5936;font-size:.9rem;}
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);backdrop-filter:blur(3px);z-index:999;}
+.modal.open{display:flex;}
+.modal-card{background:white;border-radius:16px;padding:1rem;max-width:600px;width:90%;box-shadow:var(--card-shadow);position:relative;display:flex;flex-direction:column;align-items:center;}
+.modal img{width:100%;border-radius:12px;margin-bottom:.5rem;cursor:zoom-in;transition:transform .3s;}
+.modal img.zoomed{transform:scale(1.2);}
+.modal h3{margin-bottom:.25rem;color:var(--accent);}
+.modal p{font-size:.95rem;line-height:1.5;margin-bottom:.25rem;text-align:center;}
+.modal .price{font-weight:700;color:var(--accent);margin-bottom:.5rem;}
+.btn{background:var(--yellow-400);border:none;padding:.5rem 1rem;border-radius:10px;cursor:pointer;color:var(--accent);font-weight:600;margin:2px;}
+.modal-nav{position:absolute;top:50%;transform:translateY(-50%);font-size:2rem;color:var(--accent);background:rgba(255,255,255,0.7);border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;}
+.modal-prev{left:-20px;}
+.modal-next{right:-20px;}
+@media(max-width:600px){.hero{flex-direction:column;align-items:flex-start;}}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="logo">
+    <img id="logo-img" src="" alt="โลโก้">
+  </div>
+  <div class="site-info">
+    <h1 id="site-name">Monrigold</h1>
+    <p id="site-sub">เสื้อผ้าธรรมชาติจากดอกดาวเรือง — เรียบง่าย อบอุ่น มีเอกลักษณ์</p>
+    <div class="site-tags" id="site-tag">ย้อมจากธรรมชาติ · ระบายอากาศดี · งานแฮนด์เมด</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-left">
+    <h2 id="hero-title">คอลเลกชันดอกดาวเรือง</h2>
+    <p id="hero-sub">ดาวเรืองมงคลดอกไม้แห่งคำอธิษฐาน</p>
+    <div class="features" id="hero-tags">
+      <span class="chip">ย้อมจากธรรมชาติ</span>
+      <span class="chip">ระบายอากาศดี</span>
+      <span class="chip">งานแฮนด์เมด</span>
+    </div>
+  </div>
+</section>
+
+<main>
+<h3 style="margin-bottom:.6rem;color:var(--accent)">แกลเลอรีสินค้า</h3>
+<div class="grid" id="product-grid"></div>
+</main>
+
+<footer>
+© <span id="year"></span> Marigold Atelier · ติดต่อ: facebook Thanakrit Dechakhampoo 
+</footer>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <button class="modal-nav modal-prev" id="prev">&lt;</button>
+    <img id="modal-img" src="" alt="">
+    <button class="modal-nav modal-next" id="next">&gt;</button>
+    <h3 id="modal-name"></h3>
+    <p id="modal-desc"></p>
+    <p class="price" id="modal-price"></p>
+    <div style="text-align:center"><button class="btn" id="close-modal">ปิด</button></div>
+  </div>
+</div>
+
+<script>
+const logoData = localStorage.getItem('marigold_logo');
+if(logoData) document.getElementById('logo-img').src = logoData;
+
+const siteInfo = JSON.parse(localStorage.getItem('marigold_site')||'{}');
+if(siteInfo){
+  document.getElementById('site-name').textContent = siteInfo.name || 'Monrigold';
+  document.getElementById('site-sub').textContent = siteInfo.sub || 'เสื้อผ้าธรรมชาติจากดอกดาวเรือง — เรียบง่าย อบอุ่น มีเอกลักษณ์';
+  document.getElementById('site-tag').textContent = siteInfo.tags ? siteInfo.tags.join(' · ') : 'ย้อมจากธรรมชาติ · ระบายอากาศดี · งานแฮนด์เมด';
+}
+
+const heroData = JSON.parse(localStorage.getItem('marigold_hero')||'{}');
+if(heroData){
+  document.getElementById('hero-title').textContent = heroData.title || 'คอลเลกชันดอกดาวเรือง';
+  document.getElementById('hero-sub').textContent = heroData.sub || 'ดาวเรืองมงคลดอกไม้แห่งคำอธิษฐาน';
+  const heroTagsContainer = document.getElementById('hero-tags');
+  heroTagsContainer.innerHTML = '';
+  if(heroData.tags && heroData.tags.length){
+    heroData.tags.forEach(tag=>{
+      const span = document.createElement('span');
+      span.className='chip';
+      span.textContent=tag;
+      heroTagsContainer.appendChild(span);
+    });
+  }
+}
+
+let products = JSON.parse(localStorage.getItem('marigold_products')||'[]');
+const grid = document.getElementById('product-grid');
+const modal = document.getElementById('modal');
+const modalImg = document.getElementById('modal-img');
+const modalName = document.getElementById('modal-name');
+const modalDesc = document.getElementById('modal-desc');
+const modalPrice = document.getElementById('modal-price');
+const closeModalBtn = document.getElementById('close-modal');
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+
+let currentProduct=0;
+let currentImgIndex=0;
+
+function renderProducts(){
+  if(!products.length){grid.innerHTML='<p>ยังไม่มีสินค้า</p>'; return;}
+  grid.innerHTML = '';
+  products.forEach((p,i)=>{
+    const div = document.createElement('div');
+    div.className='product';
+    div.onclick=()=>showDetail(i);
+    const imgEl = document.createElement('img');
+    imgEl.src=p.img && p.img.length ? p.img[0] : '';
+    imgEl.alt=p.name;
+    const h3 = document.createElement('h3');
+    h3.textContent=p.name;
+    const priceSpan = document.createElement('span');
+    priceSpan.className='price';
+    priceSpan.textContent='฿'+p.price;
+    div.appendChild(imgEl);
+    div.appendChild(h3);
+    div.appendChild(priceSpan);
+    grid.appendChild(div);
+  });
+}
+
+function showDetail(i){
+  currentProduct=i;
+  currentImgIndex=0;
+  updateModal();
+  modal.classList.add('open');
+}
+
+function updateModal(){
+  const p=products[currentProduct];
+  if(!p) return;
+  modalImg.src=p.img[currentImgIndex]||'';
+  modalName.textContent=p.name;
+  modalDesc.textContent=p.desc||'';
+  modalPrice.textContent='ราคา: ฿'+p.price;
+  prevBtn.style.display=p.img.length>1?'flex':'none';
+  nextBtn.style.display=p.img.length>1?'flex':'none';
+}
+
+modalImg.addEventListener('click',()=>modalImg.classList.toggle('zoomed'));
+
+prevBtn.addEventListener('click',e=>{
+  e.stopPropagation();
+  const p=products[currentProduct];
+  currentImgIndex=(currentImgIndex-1+p.img.length)%p.img.length;
+  updateModal();
+});
+nextBtn.addEventListener('click',e=>{
+  e.stopPropagation();
+  const p=products[currentProduct];
+  currentImgIndex=(currentImgIndex+1)%p.img.length;
+  updateModal();
+});
+
+closeModalBtn.addEventListener('click',()=>modal.classList.remove('open'));
+modal.addEventListener('click',e=>{if(e.target===modal) modal.classList.remove('open');});
+
+renderProducts();
+document.getElementById('year').innerText=new Date().getFullYear();
+</script>
+</body>
+</html>

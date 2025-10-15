@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Monrigold — แกลเลอรีเสื้อผ้า</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="logo"><img src="https://picsum.photos/80/80?random=1" alt="โลโก้"></div>
+  <div class="site-info">
+    <h1>Monrigold</h1>
+    <p>เสื้อผ้าธรรมชาติจากดอกดาวเรือง — เรียบง่าย อบอุ่น มีเอกลักษณ์</p>
+    <div class="site-tags">ย้อมจากธรรมชาติ · ระบายอากาศดี · งานแฮนด์เมด</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-left">
+    <h2>คอลเลกชันดอกดาวเรือง</h2>
+    <p>ดาวเรืองมงคลดอกไม้แห่งคำอธิษฐาน</p>
+    <div class="features">
+      <span class="chip">ย้อมจากธรรมชาติ</span>
+      <span class="chip">ระบายอากาศดี</span>
+      <span class="chip">งานแฮนด์เมด</span>
+    </div>
+  </div>
+</section>
+
+<main>
+<h3 style="margin-bottom:.6rem;color:var(--accent)">แกลเลอรีสินค้า</h3>
+<div class="grid" id="product-grid"></div>
+</main>
+
+<footer>
+© <span id="year"></span> Marigold Atelier
+</footer>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <button class="modal-nav modal-prev" id="prev">&lt;</button>
+    <img id="modal-img" src="" alt="">
+    <button class="modal-nav modal-next" id="next">&gt;</button>
+    <h3 id="modal-name"></h3>
+    <p id="modal-desc"></p>
+    <p class="price" id="modal-price"></p>
+    <div style="text-align:center"><button class="btn" id="close-modal">ปิด</button></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

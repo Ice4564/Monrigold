@@ -9,23 +9,19 @@
 <body>
 <div class="container">
 <header>
-  <div class="logo"><img src="https://picsum.photos/80/80?random=1" alt="โลโก้"></div>
+  <div class="logo"><img id="logo-img" src="" alt="โลโก้"></div>
   <div class="site-info">
-    <h1>Monrigold</h1>
-    <p>เสื้อผ้าธรรมชาติจากดอกดาวเรือง — เรียบง่าย อบอุ่น มีเอกลักษณ์</p>
-    <div class="site-tags">ย้อมจากธรรมชาติ · ระบายอากาศดี · งานแฮนด์เมด</div>
+    <h1 id="site-name">Monrigold</h1>
+    <p id="site-sub">เสื้อผ้าธรรมชาติจากดอกดาวเรือง — เรียบง่าย อบอุ่น มีเอกลักษณ์</p>
+    <div class="site-tags" id="site-tags">ย้อมจากธรรมชาติ · ระบายอากาศดี · งานแฮนด์เมด</div>
   </div>
 </header>
 
 <section class="hero">
   <div class="hero-left">
-    <h2>คอลเลกชันดอกดาวเรือง</h2>
-    <p>ดาวเรืองมงคลดอกไม้แห่งคำอธิษฐาน</p>
-    <div class="features">
-      <span class="chip">ย้อมจากธรรมชาติ</span>
-      <span class="chip">ระบายอากาศดี</span>
-      <span class="chip">งานแฮนด์เมด</span>
-    </div>
+    <h2 id="hero-title">คอลเลกชันดอกดาวเรือง</h2>
+    <p id="hero-sub">ดาวเรืองมงคลดอกไม้แห่งคำอธิษฐาน</p>
+    <div class="features" id="hero-tags"></div>
   </div>
 </section>
 
@@ -35,7 +31,7 @@
 </main>
 
 <footer>
-© <span id="year"></span> Marigold Atelier
+© <span id="year"></span> Monrigold
 </footer>
 </div>
 
@@ -51,6 +47,8 @@
   </div>
 </div>
 
-<script src="script.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

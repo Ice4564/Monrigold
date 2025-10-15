@@ -46,7 +46,7 @@ footer{margin-top:1.5rem;padding:1rem;text-align:center;color:#7a5936;font-size:
 .modal h3{margin-bottom:.25rem;color:var(--accent);}
 .modal p{font-size:.95rem;line-height:1.5;margin-bottom:.25rem;text-align:center;}
 .modal .price{font-weight:700;color:var(--accent);margin-bottom:.5rem;}
-.btn{background:var(--yellow-400);border:none;padding:.5rem 1rem;border-radius:10px;cursor:pointer;color:var(--accent);font-weight:600;margin:2px;}
+.btn{background:var(--yellow-200);border:none;padding:.5rem 1rem;border-radius:10px;cursor:pointer;color:var(--accent);font-weight:600;margin:2px;}
 .modal-nav{position:absolute;top:50%;transform:translateY(-50%);font-size:2rem;color:var(--accent);background:rgba(255,255,255,0.7);border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;}
 .modal-prev{left:-20px;}
 .modal-next{right:-20px;}
@@ -55,7 +55,7 @@ footer{margin-top:1.5rem;padding:1rem;text-align:center;color:#7a5936;font-size:
 <body>
 <div class="container">
 <header>
-  <div class="logo"><img id="logo-img" src="" alt="โลโก้"></div>
+  <div class="logo"><img id="logo-img" src="logo.png" alt="โลโก้"></div>
   <div class="site-info">
     <h1 id="site-name">Monrigold</h1>
     <p id="site-sub">เสื้อผ้าธรรมชาติจากดอกดาวเรือง — เรียบง่าย อบอุ่น มีเอกลักษณ์</p>
@@ -99,10 +99,28 @@ footer{margin-top:1.5rem;padding:1rem;text-align:center;color:#7a5936;font-size:
 </div>
 
 <script>
-// Real-time update using localStorage
+// ตั้งค่า default products ถ้า localStorage ว่าง
+if(!localStorage.getItem('marigold_products')){
+  localStorage.setItem('marigold_products', JSON.stringify([
+    {
+      name:'เสื้อดอกดาว',
+      price:350,
+      desc:'เสื้อผ้าธรรมชาติย้อมจากดอกดาวเรือง งานแฮนด์เมด',
+      img:['shirt1.png','shirt2.png']
+    },
+    {
+      name:'ผ้าพันคอดอกดาว',
+      price:250,
+      desc:'ผ้าพันคอนุ่ม ระบายอากาศดี',
+      img:['scarf1.png']
+    }
+  ]));
+}
+
+// โหลด site info & hero
 function loadSite(){
-  const logoData = localStorage.getItem('marigold_logo');
-  if(logoData) document.getElementById('logo-img').src = logoData;
+  const logoData = localStorage.getItem('marigold_logo') || 'logo.png';
+  document.getElementById('logo-img').src = logoData;
 
   const siteInfo = JSON.parse(localStorage.getItem('marigold_site')||'{}');
   if(siteInfo){
@@ -112,26 +130,24 @@ function loadSite(){
   }
 
   const heroData = JSON.parse(localStorage.getItem('marigold_hero')||'{}');
-  if(heroData){
+  const heroTagsContainer = document.getElementById('hero-tags');
+  heroTagsContainer.innerHTML='';
+  if(heroData && heroData.tags && heroData.tags.length){
     document.getElementById('hero-title').textContent = heroData.title||'คอลเลกชันดอกดาวเรือง';
     document.getElementById('hero-sub').textContent = heroData.sub||'ดาวเรืองมงคลดอกไม้แห่งคำอธิษฐาน';
-    const heroTagsContainer = document.getElementById('hero-tags');
-    heroTagsContainer.innerHTML='';
-    if(heroData.tags && heroData.tags.length){
-      heroData.tags.forEach(tag=>{
-        const span=document.createElement('span');
-        span.className='chip';
-        span.textContent=tag;
-        heroTagsContainer.appendChild(span);
-      });
-    } else {
-      ['ย้อมจากธรรมชาติ','ระบายอากาศดี','งานแฮนด์เมด'].forEach(tag=>{
-        const span=document.createElement('span');
-        span.className='chip';
-        span.textContent=tag;
-        heroTagsContainer.appendChild(span);
-      });
-    }
+    heroData.tags.forEach(tag=>{
+      const span=document.createElement('span');
+      span.className='chip';
+      span.textContent=tag;
+      heroTagsContainer.appendChild(span);
+    });
+  } else {
+    ['ย้อมจากธรรมชาติ','ระบายอากาศดี','งานแฮนด์เมด'].forEach(tag=>{
+      const span=document.createElement('span');
+      span.className='chip';
+      span.textContent=tag;
+      heroTagsContainer.appendChild(span);
+    });
   }
 }
 
@@ -212,7 +228,7 @@ nextBtn.addEventListener('click',e=>{
 closeModalBtn.addEventListener('click',()=>modal.classList.remove('open'));
 modal.addEventListener('click',e=>{if(e.target===modal) modal.classList.remove('open');});
 
-// Auto-refresh every 1.5s to reflect Admin changes
+// Auto-refresh every 1.5s
 setInterval(loadSite,1500);
 setInterval(renderProducts,1500);
 

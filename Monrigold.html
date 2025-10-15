@@ -55,19 +55,19 @@ footer{margin-top:1.5rem;padding:1rem;text-align:center;color:#7a5936;font-size:
 <body>
 <div class="container">
 <header>
-  <div class="logo"><img id="logo-img" src="logo.png" alt="โลโก้"></div>
+  <div class="logo"><img id="logo-img" src="https://picsum.photos/80/80?random=1" alt="โลโก้"></div>
   <div class="site-info">
-    <h1 id="site-name">Monrigold</h1>
-    <p id="site-sub">เสื้อผ้าธรรมชาติจากดอกดาวเรือง — เรียบง่าย อบอุ่น มีเอกลักษณ์</p>
-    <div class="site-tags" id="site-tag">ย้อมจากธรรมชาติ · ระบายอากาศดี · งานแฮนด์เมด</div>
+    <h1>Monrigold</h1>
+    <p>เสื้อผ้าธรรมชาติจากดอกดาวเรือง — เรียบง่าย อบอุ่น มีเอกลักษณ์</p>
+    <div class="site-tags">ย้อมจากธรรมชาติ · ระบายอากาศดี · งานแฮนด์เมด</div>
   </div>
 </header>
 
 <section class="hero">
   <div class="hero-left">
-    <h2 id="hero-title">คอลเลกชันดอกดาวเรือง</h2>
-    <p id="hero-sub">ดาวเรืองมงคลดอกไม้แห่งคำอธิษฐาน</p>
-    <div class="features" id="hero-tags">
+    <h2>คอลเลกชันดอกดาวเรือง</h2>
+    <p>ดาวเรืองมงคลดอกไม้แห่งคำอธิษฐาน</p>
+    <div class="features">
       <span class="chip">ย้อมจากธรรมชาติ</span>
       <span class="chip">ระบายอากาศดี</span>
       <span class="chip">งานแฮนด์เมด</span>
@@ -99,60 +99,13 @@ footer{margin-top:1.5rem;padding:1rem;text-align:center;color:#7a5936;font-size:
 </div>
 
 <script>
-// ตั้งค่า default products ถ้า localStorage ว่าง
-if(!localStorage.getItem('marigold_products')){
-  localStorage.setItem('marigold_products', JSON.stringify([
-    {
-      name:'เสื้อดอกดาว',
-      price:350,
-      desc:'เสื้อผ้าธรรมชาติย้อมจากดอกดาวเรือง งานแฮนด์เมด',
-      img:['shirt1.png','shirt2.png']
-    },
-    {
-      name:'ผ้าพันคอดอกดาว',
-      price:250,
-      desc:'ผ้าพันคอนุ่ม ระบายอากาศดี',
-      img:['scarf1.png']
-    }
-  ]));
-}
+// ตัวอย่างสินค้า
+const products = [
+  { name:'เสื้อดอกดาว', price:350, desc:'เสื้อผ้าธรรมชาติย้อมจากดอกดาวเรือง', img:['https://picsum.photos/400/400?random=2','https://picsum.photos/400/400?random=3'] },
+  { name:'ผ้าพันคอดอกดาว', price:250, desc:'ผ้าพันคอนุ่ม ระบายอากาศดี', img:['https://picsum.photos/400/400?random=4'] },
+  { name:'กระโปรงดอกดาว', price:400, desc:'กระโปรงงานแฮนด์เมด สีสดใส', img:['https://picsum.photos/400/400?random=5','https://picsum.photos/400/400?random=6'] }
+];
 
-// โหลด site info & hero
-function loadSite(){
-  const logoData = localStorage.getItem('marigold_logo') || 'logo.png';
-  document.getElementById('logo-img').src = logoData;
-
-  const siteInfo = JSON.parse(localStorage.getItem('marigold_site')||'{}');
-  if(siteInfo){
-    document.getElementById('site-name').textContent = siteInfo.name||'Monrigold';
-    document.getElementById('site-sub').textContent = siteInfo.sub||'เสื้อผ้าธรรมชาติจากดอกดาวเรือง — เรียบง่าย อบอุ่น มีเอกลักษณ์';
-    document.getElementById('site-tag').textContent = siteInfo.tags ? siteInfo.tags.join(' · ') : 'ย้อมจากธรรมชาติ · ระบายอากาศดี · งานแฮนด์เมด';
-  }
-
-  const heroData = JSON.parse(localStorage.getItem('marigold_hero')||'{}');
-  const heroTagsContainer = document.getElementById('hero-tags');
-  heroTagsContainer.innerHTML='';
-  if(heroData && heroData.tags && heroData.tags.length){
-    document.getElementById('hero-title').textContent = heroData.title||'คอลเลกชันดอกดาวเรือง';
-    document.getElementById('hero-sub').textContent = heroData.sub||'ดาวเรืองมงคลดอกไม้แห่งคำอธิษฐาน';
-    heroData.tags.forEach(tag=>{
-      const span=document.createElement('span');
-      span.className='chip';
-      span.textContent=tag;
-      heroTagsContainer.appendChild(span);
-    });
-  } else {
-    ['ย้อมจากธรรมชาติ','ระบายอากาศดี','งานแฮนด์เมด'].forEach(tag=>{
-      const span=document.createElement('span');
-      span.className='chip';
-      span.textContent=tag;
-      heroTagsContainer.appendChild(span);
-    });
-  }
-}
-
-// Products
-let products = JSON.parse(localStorage.getItem('marigold_products')||'[]');
 const grid = document.getElementById('product-grid');
 const modal = document.getElementById('modal');
 const modalImg = document.getElementById('modal-img');
@@ -167,15 +120,13 @@ let currentProduct = 0;
 let currentImgIndex = 0;
 
 function renderProducts(){
-  products = JSON.parse(localStorage.getItem('marigold_products')||'[]');
-  if(!products.length){grid.innerHTML='<p>ยังไม่มีสินค้า</p>'; return;}
-  grid.innerHTML = '';
+  grid.innerHTML='';
   products.forEach((p,i)=>{
     const div=document.createElement('div');
     div.className='product';
     div.onclick=()=>showDetail(i);
     const img=document.createElement('img');
-    img.src=p.img[0]||'';
+    img.src=p.img[0];
     img.alt=p.name;
     const h3=document.createElement('h3');
     h3.textContent=p.name;
@@ -198,19 +149,16 @@ function showDetail(i){
 
 function updateModal(){
   const p = products[currentProduct];
-  if(!p) return;
-  modalImg.src = p.img[currentImgIndex]||'';
+  modalImg.src = p.img[currentImgIndex];
   modalName.textContent = p.name;
-  modalDesc.textContent = p.desc||'';
-  modalPrice.textContent = 'ราคา: ฿' + p.price;
+  modalDesc.textContent = p.desc;
+  modalPrice.textContent = 'ราคา: ฿'+p.price;
   prevBtn.style.display = p.img.length>1?'flex':'none';
   nextBtn.style.display = p.img.length>1?'flex':'none';
 }
 
-// Zoom
 modalImg.addEventListener('click',()=>modalImg.classList.toggle('zoomed'));
 
-// Navigation
 prevBtn.addEventListener('click',e=>{
   e.stopPropagation();
   const p = products[currentProduct];
@@ -224,17 +172,11 @@ nextBtn.addEventListener('click',e=>{
   updateModal();
 });
 
-// Close modal
 closeModalBtn.addEventListener('click',()=>modal.classList.remove('open'));
 modal.addEventListener('click',e=>{if(e.target===modal) modal.classList.remove('open');});
 
-// Auto-refresh every 1.5s
-setInterval(loadSite,1500);
-setInterval(renderProducts,1500);
-
-document.getElementById('year').innerText=new Date().getFullYear();
+document.getElementById('year').textContent = new Date().getFullYear();
 renderProducts();
-loadSite();
 </script>
 </body>
 </html>
